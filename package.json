@@ -1,6 +1,6 @@
 {
   "name": "jsdiscordbot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Telegraf-inspired Discord.js bot framework with scenes, session, and markup.",
   "main": "index.js",
   "type": "module",
