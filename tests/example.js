@@ -98,6 +98,16 @@ bot.command('/audio', async (ctx) => {
   )
 })
 
+// Example: Create and send a chat invite link
+bot.command('/invite', async (ctx) => {
+  try {
+    const inviteUrl = await ctx.chatInviteLink({ maxAge: 600, maxUses: 5 })
+    await ctx.reply(`Invite link: ${inviteUrl}`)
+  } catch (err) {
+    await ctx.reply('Failed to create invite link: ' + err.message)
+  }
+})
+
 bot.command('/video', async (ctx) => {
   await ctx.replyWithDocument(
     testVideoUrl,

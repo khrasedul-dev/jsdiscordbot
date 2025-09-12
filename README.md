@@ -67,6 +67,7 @@ await ctx.replyWithPhoto('https://example.com/photo.jpg', 'Photo!', Markup.keybo
 await ctx.replyWithDocument('https://example.com/file.pdf', 'Document!', Markup.keyboard(...))
 ```
 
+
 #### Handling Actions
 
 ```js
@@ -74,6 +75,25 @@ bot.action('YES', (ctx) => ctx.reply('You clicked Yes!'))
 bot.action(/LIKE|DISLIKE/, (ctx) => ctx.reply('You clicked Like or Dislike!'))
 bot.action(['A', 'B'], (ctx) => ctx.reply('You clicked A or B!'))
 ```
+
+### Chat Invite Link
+
+Create a Discord chat invite link for the current channel (like TelegrafJS):
+
+```js
+// Create an invite link for up to 10 users (link expires after 10 uses)
+const inviteUrl = await ctx.chatInviteLink({ maxUses: 10 })
+await ctx.reply(`Invite link: ${inviteUrl}`)
+```
+
+**Options:**
+- `maxUses`: Maximum number of users who can join with the link (default: 1)
+- `maxAge`: Link expiration time in seconds (default: 3600)
+- `temporary`: Grant temporary membership (default: false)
+- `unique`: Create a unique invite (default: true)
+- `reason`: Reason for invite creation
+
+After the specified number of users join, the link becomes invalid automatically.
 
 ## Example: Registration Scene
 
