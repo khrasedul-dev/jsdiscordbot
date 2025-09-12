@@ -1,0 +1,48 @@
+{
+  "name": "jsdiscordbot",
+  "version": "1.0.0",
+  "description": "A Telegraf-inspired Discord.js bot framework with scenes, session, and markup.",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "context.js",
+    "markup.js",
+    "scenes.js",
+    "session.js",
+    "sessionStore.js",
+    "middlewares/",
+    "tests/"
+  ],
+  "keywords": [
+    "discord",
+    "bot",
+    "framework",
+    "discord.js",
+    "telegraf",
+    "jsdiscordbot"
+  ],
+  "author": "KH Rasedul <rasedul.dev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khrasedul-dev/jsdiscordbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/khrasedul-dev/jsdiscordbot/issues"
+  },
+  "homepage": "https://github.com/khrasedul-dev/jsdiscordbot#readme",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "discord.js": "^14.14.1"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.2"
+  }
+}
