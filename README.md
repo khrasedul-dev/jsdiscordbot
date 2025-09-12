@@ -385,6 +385,33 @@ bot.launch()
 
 ```
 
+## Custom Express Hosting
+
+You can host DiscordBot with your own Express app :
+
+```js
+import express from 'express'
+import DiscordBot from 'jsdiscordbot'
+
+const bot = new DiscordBot({
+  /* ...config... */
+})
+
+const app = express()
+app.use(express.json())
+
+// Mount Messenger webhook route
+app.use('/webhook', bot.app)
+
+// Start your own server
+app.listen(3000, () => {
+  console.log('Custom Express server running on port 3000')
+})
+```
+
+Do not use `bot.launch()` if you want full control over your Express server.
+
+
 ## License
 
 MIT
