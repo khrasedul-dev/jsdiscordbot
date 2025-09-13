@@ -67,7 +67,6 @@ await ctx.replyWithPhoto('https://example.com/photo.jpg', 'Photo!', Markup.keybo
 await ctx.replyWithDocument('https://example.com/file.pdf', 'Document!', Markup.keyboard(...))
 ```
 
-
 #### Handling Actions
 
 ```js
@@ -87,6 +86,7 @@ await ctx.reply(`Invite link: ${inviteUrl}`)
 ```
 
 **Options:**
+
 - `maxUses`: Maximum number of users who can join with the link (default: 1)
 - `maxAge`: Link expiration time in seconds (default: 3600)
 - `temporary`: Grant temporary membership (default: false)
@@ -402,7 +402,6 @@ bot.on('message', async (ctx) => {
 })
 
 bot.launch()
-
 ```
 
 ## Custom Express Hosting
@@ -431,7 +430,6 @@ app.listen(3000, () => {
 
 Do not use `bot.launch()` if you want full control over your Express server.
 
-
 ## License
 
 MIT
@@ -439,4 +437,3 @@ MIT
 ## Author
 
 KH Rasedul — [rasedul.dev@gmail.com](mailto:rasedul.dev@gmail.com)
-

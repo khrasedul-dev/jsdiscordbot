@@ -250,6 +250,7 @@ bot.action(['ACTION1', 'ACTION2'], async (ctx) => {
 
 bot.on('message', async (ctx) => {
   console.log(`Received message: ${ctx.text}`)
+    await ctx.reply(`You said: ${ctx.text}`)
 })
 
 bot.launch()

@@ -8,22 +8,20 @@ class DiscordBot {
   command(cmds, fn) {
     const arr = Array.isArray(cmds) ? cmds : [cmds]
     this.on('command', async (ctx) => {
-      if (ctx.text) {
-        for (const cmd of arr) {
-          if (
-            typeof cmd === 'string' &&
-            ctx.text.split(' ')[0] === cmd.replace(/^\//, '')
-          ) {
-            await fn(ctx)
-            return
-          } else if (cmd instanceof RegExp && cmd.test(ctx.text)) {
-            await fn(ctx)
-            return
-          }
+      if (!ctx.text) return
+      for (const cmd of arr) {
+        if (
+          (typeof cmd === 'string' && ctx.text.split(' ')[0] === cmd.replace(/^\//, '')) ||
+          (cmd instanceof RegExp && cmd.test(ctx.text))
+        ) {
+          await fn(ctx)
+          ctx.handled = true // automatically mark handled
+          return
         }
       }
     })
   }
+
   constructor({ token, sessionStore, errorHandler = null } = {}) {
     if (!token) throw new Error('DiscordBot requires a bot token')
     this.token = token
@@ -62,15 +60,15 @@ class DiscordBot {
   hears(patterns, fn) {
     const arr = Array.isArray(patterns) ? patterns : [patterns]
     this.on('message', async (ctx) => {
-      if (ctx.text) {
-        for (const pattern of arr) {
-          if (typeof pattern === 'string' && ctx.text === pattern) {
-            await fn(ctx)
-            return
-          } else if (pattern instanceof RegExp && pattern.test(ctx.text)) {
-            await fn(ctx)
-            return
-          }
+      if (!ctx.text) return
+      for (const pattern of arr) {
+        if (
+          (typeof pattern === 'string' && ctx.text === pattern) ||
+          (pattern instanceof RegExp && pattern.test(ctx.text))
+        ) {
+          await fn(ctx)
+          ctx.handled = true // automatically mark handled
+          return
         }
       }
     })
@@ -107,24 +105,21 @@ class DiscordBot {
       }
 
       try {
-        await interaction.deferUpdate() // Prevent "This interaction failed"
-      } catch {
-        // ignore errors from already-acknowledged interactions
-      }
+        await interaction.deferUpdate()
+      } catch {}
     })
   }
-  // Register a button action handler (Telegraf-style)
+
   action(actionIdOrArray, fn) {
-    const arr = Array.isArray(actionIdOrArray)
-      ? actionIdOrArray
-      : [actionIdOrArray]
+    const arr = Array.isArray(actionIdOrArray) ? actionIdOrArray : [actionIdOrArray]
     this.on('action', async (ctx) => {
       for (const pattern of arr) {
-        if (typeof pattern === 'string' && ctx.payload === pattern) {
+        if (
+          (typeof pattern === 'string' && ctx.payload === pattern) ||
+          (pattern instanceof RegExp && pattern.test(ctx.payload))
+        ) {
           await fn(ctx)
-          return
-        } else if (pattern instanceof RegExp && pattern.test(ctx.payload)) {
-          await fn(ctx)
+          ctx.handled = true // automatically mark handled
           return
         }
       }
@@ -145,11 +140,14 @@ class DiscordBot {
       })
     }
 
-    // Message event
     this.client.on('messageCreate', async (message) => {
       if (message.author.bot) return
+
       const ctx = new Context(this, message, message.channelId)
       ctx.session = (await this.sessionStore.get(message.author.id)) || {}
+      ctx.handled = false
+
+      // Run middlewares
       for (const mw of this.middlewares) {
         try {
           await mw(ctx, async () => {})
@@ -158,7 +156,10 @@ class DiscordBot {
           else console.error('Middleware error:', err)
         }
       }
+
+      // Run message handlers
       for (const handler of this.handlers.message) {
+        if (ctx.handled) break
         try {
           await handler(ctx)
         } catch (err) {
@@ -166,9 +167,12 @@ class DiscordBot {
           else console.error('Message handler error:', err)
         }
       }
-      if (message.content.startsWith('/') || message.content.startsWith('!')) {
+
+      // Run command handlers if message starts with / or !
+      if (!ctx.handled && (message.content.startsWith('/') || message.content.startsWith('!'))) {
         ctx.text = message.content.slice(1)
         for (const handler of this.handlers.command) {
+          if (ctx.handled) break
           try {
             await handler(ctx)
           } catch (err) {
@@ -177,13 +181,14 @@ class DiscordBot {
           }
         }
       }
+
       await this.sessionStore.set(message.author.id, ctx.session)
     })
 
-    // Interaction event (buttons, select menus, etc.)
+    // Setup interactions
     this._setupInteractions()
 
-    // Member join event
+    // Member join
     this.client.on('guildMemberAdd', async (member) => {
       for (const handler of this.handlers.new_member || []) {
         try {
@@ -195,7 +200,7 @@ class DiscordBot {
       }
     })
 
-    // Member leave event
+    // Member leave
     this.client.on('guildMemberRemove', async (member) => {
       for (const handler of this.handlers.remove_member || []) {
         try {
@@ -207,7 +212,7 @@ class DiscordBot {
       }
     })
 
-    // Reaction add event
+    // Reaction add
     this.client.on('messageReactionAdd', async (reaction, user) => {
       for (const handler of this.handlers.message_reaction_add || []) {
         try {
@@ -219,7 +224,7 @@ class DiscordBot {
       }
     })
 
-    // Reaction remove event
+    // Reaction remove
     this.client.on('messageReactionRemove', async (reaction, user) => {
       for (const handler of this.handlers.message_reaction_remove || []) {
         try {
@@ -230,8 +235,6 @@ class DiscordBot {
         }
       }
     })
-
-    // Add more events as needed (voice, typing, etc.)
 
     await this.client.login(this.token)
     console.log('🚀 DiscordBot is running and connected to Discord!')
