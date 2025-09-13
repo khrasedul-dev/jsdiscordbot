@@ -11,7 +11,8 @@ class DiscordBot {
       if (!ctx.text) return
       for (const cmd of arr) {
         if (
-          (typeof cmd === 'string' && ctx.text.split(' ')[0] === cmd.replace(/^\//, '')) ||
+          (typeof cmd === 'string' &&
+            ctx.text.split(' ')[0] === cmd.replace(/^\//, '')) ||
           (cmd instanceof RegExp && cmd.test(ctx.text))
         ) {
           await fn(ctx)
@@ -111,7 +112,9 @@ class DiscordBot {
   }
 
   action(actionIdOrArray, fn) {
-    const arr = Array.isArray(actionIdOrArray) ? actionIdOrArray : [actionIdOrArray]
+    const arr = Array.isArray(actionIdOrArray)
+      ? actionIdOrArray
+      : [actionIdOrArray]
     this.on('action', async (ctx) => {
       for (const pattern of arr) {
         if (
@@ -157,19 +160,8 @@ class DiscordBot {
         }
       }
 
-      // Run message handlers
-      for (const handler of this.handlers.message) {
-        if (ctx.handled) break
-        try {
-          await handler(ctx)
-        } catch (err) {
-          if (this.errorHandler) this.errorHandler(err, ctx)
-          else console.error('Message handler error:', err)
-        }
-      }
-
-      // Run command handlers if message starts with / or !
-      if (!ctx.handled && (message.content.startsWith('/') || message.content.startsWith('!'))) {
+      // Run command handlers first if message starts with / or !
+      if (message.content.startsWith('/') || message.content.startsWith('!')) {
         ctx.text = message.content.slice(1)
         for (const handler of this.handlers.command) {
           if (ctx.handled) break
@@ -180,6 +172,26 @@ class DiscordBot {
             else console.error('Command handler error:', err)
           }
         }
+      }
+
+      // Run message handlers only if not handled
+      let messageHandled = false
+      if (!ctx.handled) {
+        for (const handler of this.handlers.message) {
+          if (ctx.handled) break
+          try {
+            await handler(ctx)
+            messageHandled = true
+          } catch (err) {
+            if (this.errorHandler) this.errorHandler(err, ctx)
+            else console.error('Message handler error:', err)
+          }
+        }
+      }
+
+      // Default reply if not handled and not in a scene
+      if (!ctx.handled && !ctx.session.__scene && ctx.text) {
+        await ctx.reply(`You said: ${ctx.text}`)
       }
 
       await this.sessionStore.set(message.author.id, ctx.session)

@@ -22,11 +22,14 @@ class Scene {
     if (step < this.steps.length) {
       const prevStep = step
       const result = await this.steps[step](ctx)
+      // Mark as handled if a scene step was processed
+      ctx.handled = true
       if (ctx.session.step === prevStep && ctx.text && result !== false) {
         ctx.session.step++
       }
     } else {
       await this.leave(ctx)
+      ctx.handled = true
     }
   }
 }
