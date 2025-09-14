@@ -1,5 +1,33 @@
 A **Telegraf-inspired framework** for building **Discord bots** with modern **scene** and **session** management.
 
+## 💖 Support My Work
+
+If you enjoy my projects and want to support me, you can donate using **crypto** 🚀
+
+---
+
+### 🌍 Wallet Addresses
+
+| Coin | Network | Address |
+|------|---------|---------|
+| 🟠 **Bitcoin (BTC)** | Bitcoin | `1PouA4hPvM4sgg26RbbevBuG3JVF2yGiTt` |
+| 🔵 **Ethereum (ETH)** | ERC20 | `0x35e743344347b02e0071e8ec2a9850ec4fc879f2` |
+| 🟢 **Tether (USDT)** | TRC20 | `TWUbLudtqA65r6tFXrhBigVxgH22GikMct` |
+| 🟢 **Tether (USDT)** | ERC20 | `0x35e743344347b02e0071e8ec2a9850ec4fc879f2` |
+
+---
+
+### 🔗 Quick Donate Links
+
+[![Donate Bitcoin](https://img.shields.io/badge/Bitcoin-Donate-orange?logo=bitcoin&style=for-the-badge)](bitcoin:1PouA4hPvM4sgg26RbbevBuG3JVF2yGiTt)
+[![Donate Ethereum](https://img.shields.io/badge/Ethereum-Donate-blue?logo=ethereum&style=for-the-badge)](ethereum:0x35e743344347b02e0071e8ec2a9850ec4fc879f2)
+[![Donate USDT](https://img.shields.io/badge/USDT-Donate-green?logo=tether&style=for-the-badge)](https://tronscan.org/#/address/TWUbLudtqA65r6tFXrhBigVxgH22GikMct)
+
+---
+
+✨ Thank you for your support — it really means a lot! 🙏
+
+
 ## Features
 
 - Step-by-step **scene system** (Wizard-like)
