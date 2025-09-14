@@ -191,7 +191,7 @@ class DiscordBot {
 
       // Default reply if not handled and not in a scene
       if (!ctx.handled && !ctx.session.__scene && ctx.text) {
-        await ctx.reply(`You said: ${ctx.text}`)
+        return
       }
 
       await this.sessionStore.set(message.author.id, ctx.session)
