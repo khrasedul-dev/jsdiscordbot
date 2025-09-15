@@ -64,11 +64,19 @@ bot.command('/photo', async (ctx) => {
     'Here is a photo with buttons!',
     Markup.keyboard([
       [
-        Markup.button('Like', 'LIKE', 'PRIMARY'),
-        Markup.button('Dislike', 'DISLIKE', 'DANGER'),
+        Markup.button('Like', 'button', 'LIKE', 'PRIMARY'),
+        Markup.button({label: 'Dislike', type: 'button', idOrUrl: 'DISLIKE', style: 'DANGER'})
       ],
     ])
   )
+})
+
+bot.action('DISLIKE', async (ctx) => {
+  if (ctx.event && typeof ctx.event.reply === 'function') {
+    await ctx.event.reply({ content: 'You clicked Dislike!', ephemeral: true })
+    } else {
+    await ctx.reply('You clicked Dislike!')
+    }
 })
 
 bot.command('/document', async (ctx) => {
@@ -76,7 +84,7 @@ bot.command('/document', async (ctx) => {
     testDocUrl,
     'dummy.pdf',
     'Here is a document with buttons!',
-    Markup.keyboard([[Markup.button('Download', 'DOWNLOAD', 'SUCCESS')]])
+    Markup.keyboard([[Markup.button('Download', 'button', 'DOWNLOAD', 'SUCCESS')]])
   )
 })
 
@@ -85,7 +93,7 @@ bot.command('/pdf', async (ctx) => {
     testDocUrl,
     'dummy.pdf',
     'Here is a PDF with buttons!',
-    Markup.keyboard([[Markup.button('Open PDF', 'OPEN_PDF', 'PRIMARY')]])
+    Markup.keyboard([[Markup.button('Open PDF', 'button', 'OPEN_PDF', 'PRIMARY')]])
   )
 })
 
@@ -94,7 +102,7 @@ bot.command('/audio', async (ctx) => {
     testAudioUrl,
     'test-audio.mp3',
     'Here is an audio file with buttons!',
-    Markup.keyboard([[Markup.button('Play', 'PLAY_AUDIO', 'SUCCESS')]])
+    Markup.keyboard([[Markup.button('Play', 'button', 'PLAY_AUDIO', 'SUCCESS')]])
   )
 })
 
@@ -113,7 +121,7 @@ bot.command('/video', async (ctx) => {
     testVideoUrl,
     'test-video.mp4',
     'Here is a video file with buttons!',
-    Markup.keyboard([[Markup.button('Play', 'PLAY_VIDEO', 'PRIMARY')]])
+    Markup.keyboard([[Markup.button('Play', 'button', 'PLAY_VIDEO', 'PRIMARY')]])
   )
 })
 
@@ -156,8 +164,8 @@ bot.command('/keyboard', async (ctx) => {
     'Choose an option:',
     Markup.keyboard([
       [
-        Markup.button('Yes', 'YES', 'PRIMARY'),
-        Markup.button('No', 'NO', 'DANGER'),
+        Markup.button('Yes', 'button', 'YES', 'PRIMARY'),
+        Markup.button('No', 'button', 'NO', 'DANGER'),
       ],
     ])
   )

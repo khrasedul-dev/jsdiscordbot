@@ -79,8 +79,9 @@ await ctx.reply(
   'Choose an option:',
   Markup.keyboard([
     [
-      Markup.button('Yes', 'YES', 'PRIMARY'),
-      Markup.button('No', 'NO', 'DANGER'),
+        Markup.button({ label: 'Yes', type: "button", idOrUrl: 'ID', style: 'SUCCESS' }),
+        Markup.button('Label', 'button', 'ID', 'PRIMARY')
+        Markup.button('Label', 'url', 'https://example.com')
     ],
   ])
 )
@@ -249,8 +250,8 @@ bot.command('/photo', async (ctx) => {
     'Here is a photo with buttons!',
     Markup.keyboard([
       [
-        Markup.button('Like', 'LIKE', 'PRIMARY'),
-        Markup.button('Dislike', 'DISLIKE', 'DANGER'),
+        Markup.button('Like', 'button', 'LIKE', 'PRIMARY'),
+        Markup.button('Dislike', 'button', 'DISLIKE', 'DANGER'),
       ],
     ])
   )
@@ -270,7 +271,7 @@ bot.command('/pdf', async (ctx) => {
     testDocUrl,
     'dummy.pdf',
     'Here is a PDF with buttons!',
-    Markup.keyboard([[Markup.button('Open PDF', 'OPEN_PDF', 'PRIMARY')]])
+    Markup.keyboard([[Markup.button('Open PDF', 'button', 'OPEN_PDF', 'PRIMARY')]])
   )
 })
 
@@ -279,7 +280,7 @@ bot.command('/audio', async (ctx) => {
     testAudioUrl,
     'test-audio.mp3',
     'Here is an audio file with buttons!',
-    Markup.keyboard([[Markup.button('Play', 'PLAY_AUDIO', 'SUCCESS')]])
+    Markup.keyboard([[Markup.button('Play', 'button', 'PLAY_AUDIO', 'SUCCESS')]])
   )
 })
 
@@ -288,7 +289,7 @@ bot.command('/video', async (ctx) => {
     testVideoUrl,
     'test-video.mp4',
     'Here is a video file with buttons!',
-    Markup.keyboard([[Markup.button('Play', 'PLAY_VIDEO', 'PRIMARY')]])
+    Markup.keyboard([[Markup.button('Play', 'button', 'PLAY_VIDEO', 'PRIMARY')]])
   )
 })
 
@@ -331,8 +332,8 @@ bot.command('/keyboard', async (ctx) => {
     'Choose an option:',
     Markup.keyboard([
       [
-        Markup.button('Yes', 'YES', 'PRIMARY'),
-        Markup.button('No', 'NO', 'DANGER'),
+        Markup.button('Yes', 'button', 'YES', 'PRIMARY'),
+        Markup.button('No', 'button', 'NO', 'DANGER'),
       ],
     ])
   )

@@ -1,5 +1,14 @@
-// Context abstraction for DiscordBot
+/**
+ * Context abstraction for DiscordBot. Provides message, event, session, and reply helpers.
+ * @class
+ */
 class Context {
+  /**
+   * Create a new Context instance.
+   * @param {DiscordBot} bot - The bot instance.
+   * @param {object} event - Discord event/message object.
+   * @param {string} senderId - Sender's Discord user ID.
+   */
   constructor(bot, event, senderId) {
     this.bot = bot
     this.chat = { id: senderId }
@@ -15,6 +24,12 @@ class Context {
   }
 
   // --- Basic Reply ---
+  /**
+   * Reply to the current event/message.
+   * @param {string|object} textOrPayload - Message text or Discord.js payload object.
+   * @param {Array|object|null} [buttons=null] - Button(s) to attach.
+   * @returns {Promise<object>} Discord.js message response.
+   */
   async reply(textOrPayload, buttons = null) {
     let payload
     if (typeof textOrPayload === 'string') {
@@ -31,6 +46,13 @@ class Context {
   }
 
   // --- Reply with Photo ---
+  /**
+   * Reply with a photo attachment.
+   * @param {string|Buffer} urlOrBuffer - URL or Buffer for the photo.
+   * @param {string} [caption=''] - Caption text.
+   * @param {Array|object|null} [buttons=null] - Button(s) to attach.
+   * @returns {Promise<object>} Discord.js message response.
+   */
   async replyWithPhoto(urlOrBuffer, caption = '', buttons = null) {
     let fileData = urlOrBuffer
     let fileName = 'photo.jpg'
@@ -55,6 +77,14 @@ class Context {
   }
 
   // --- Reply with Document ---
+  /**
+   * Reply with a document attachment.
+   * @param {string|Buffer} urlOrBuffer - URL or Buffer for the document.
+   * @param {string} [filename='file'] - Filename for the document.
+   * @param {string} [caption=''] - Caption text.
+   * @param {Array|object|null} [buttons=null] - Button(s) to attach.
+   * @returns {Promise<object>} Discord.js message response.
+   */
   async replyWithDocument(
     urlOrBuffer,
     filename = 'file',
@@ -80,6 +110,14 @@ class Context {
   }
 
   // --- Reply with PDF ---
+  /**
+   * Reply with a PDF attachment.
+   * @param {string|Buffer} urlOrBuffer - URL or Buffer for the PDF.
+   * @param {string} [filename='file.pdf'] - Filename for the PDF.
+   * @param {string} [caption=''] - Caption text.
+   * @param {Array|object|null} [buttons=null] - Button(s) to attach.
+   * @returns {Promise<object>} Discord.js message response.
+   */
   async replyWithPDF(
     urlOrBuffer,
     filename = 'file.pdf',
@@ -107,6 +145,12 @@ class Context {
   }
 
   // --- Kick Member ---
+  /**
+   * Kick a member from the server.
+   * @param {string|object} target - User ID or GuildMember object.
+   * @param {string} [reason='Kicked by bot'] - Reason for kick.
+   * @returns {Promise<boolean>} True if successful, false otherwise.
+   */
   async kickMember(target, reason = 'Kicked by bot') {
     let member = null
     if (target && typeof target.kick === 'function') {
@@ -128,6 +172,12 @@ class Context {
   }
 
   // --- Ban Member ---
+  /**
+   * Ban a member from the server.
+   * @param {string|object} target - User ID or GuildMember object.
+   * @param {string} [reason='Banned by bot'] - Reason for ban.
+   * @returns {Promise<boolean>} True if successful, false otherwise.
+   */
   async banMember(target, reason = 'Banned by bot') {
     let member = null
     if (target && typeof target.ban === 'function') {
@@ -149,6 +199,11 @@ class Context {
   }
 
   // --- Delete Message ---
+  /**
+   * Delete a message.
+   * @param {string|object} [target] - Message ID or Discord.js Message object.
+   * @returns {Promise<boolean>} True if successful, false otherwise.
+   */
   async deleteMessage(target) {
     let message = target || this.event.message
     if (typeof message === 'string' && this.event.channel) {
@@ -168,6 +223,11 @@ class Context {
   }
 
   // --- Chat Invite Link (TelegrafJS style) ---
+  /**
+   * Create a chat invite link for the current channel.
+   * @param {object} [options={}] - Invite options (maxAge, maxUses, etc).
+   * @returns {Promise<string>} Invite URL.
+   */
   async chatInviteLink(options = {}) {
     if (
       !this.event.channel ||
@@ -188,4 +248,8 @@ class Context {
   }
 }
 
+/**
+ * Context abstraction for DiscordBot events and replies.
+ * @type {Context}
+ */
 export default Context

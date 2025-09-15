@@ -4,7 +4,17 @@ import { Scene, SceneManager } from './scenes.js'
 import { session } from './session.js'
 import { sessionStore as defaultSessionStore } from './sessionStore.js'
 
+/**
+ * Main DiscordBot framework class. Handles commands, actions, scenes, middlewares, and message events.
+ * @class
+ */
+
 class DiscordBot {
+  /**
+   * Register a command handler.
+   * @param {string|RegExp|Array} cmds - Command(s) to match.
+   * @param {function(Context):Promise<void>} fn - Handler function.
+   */
   command(cmds, fn) {
     const arr = Array.isArray(cmds) ? cmds : [cmds]
     this.on('command', async (ctx) => {
@@ -23,6 +33,13 @@ class DiscordBot {
     })
   }
 
+  /**
+   * Create a new DiscordBot instance.
+   * @param {object} options - Bot options.
+   * @param {string} options.token - Discord bot token.
+   * @param {object} [options.sessionStore] - Custom session store.
+   * @param {function} [options.errorHandler] - Error handler.
+   */
   constructor({ token, sessionStore, errorHandler = null } = {}) {
     if (!token) throw new Error('DiscordBot requires a bot token')
     this.token = token
@@ -45,19 +62,37 @@ class DiscordBot {
     this.client = null
   }
 
+  /**
+   * Register a middleware function.
+   * @param {function(Context, function):Promise<void>} fn - Middleware function.
+   */
   use(fn) {
     this.middlewares.push(fn)
   }
 
+  /**
+   * Set a global error handler.
+   * @param {function(Error, Context):Promise<void>} fn - Error handler function.
+   */
   catch(fn) {
     this.errorHandler = fn
   }
 
+  /**
+   * Register an event handler.
+   * @param {string} event - Event name.
+   * @param {function(Context):Promise<void>} fn - Handler function.
+   */
   on(event, fn) {
     if (!this.handlers[event]) this.handlers[event] = []
     this.handlers[event].push(fn)
   }
 
+  /**
+   * Register a message pattern handler.
+   * @param {string|RegExp|Array} patterns - Patterns to match.
+   * @param {function(Context):Promise<void>} fn - Handler function.
+   */
   hears(patterns, fn) {
     const arr = Array.isArray(patterns) ? patterns : [patterns]
     this.on('message', async (ctx) => {
@@ -75,6 +110,12 @@ class DiscordBot {
     })
   }
 
+  /**
+   * Send a message to a channel.
+   * @param {string} chatId - Channel ID.
+   * @param {object|string} payload - Message payload or text.
+   * @returns {Promise<object|undefined>} Discord.js message response.
+   */
   async sendMessage(chatId, payload) {
     if (!this.client) return
     const channel = this.client.channels?.cache.get(chatId)
@@ -89,6 +130,10 @@ class DiscordBot {
     }
   }
 
+  /**
+   * Internal: Setup Discord button interactions.
+   * @private
+   */
   _setupInteractions() {
     if (!this.client) return
     this.client.on('interactionCreate', async (interaction) => {
@@ -111,6 +156,11 @@ class DiscordBot {
     })
   }
 
+  /**
+   * Register an action (button) handler.
+   * @param {string|RegExp|Array} actionIdOrArray - Action(s) to match.
+   * @param {function(Context):Promise<void>} fn - Handler function.
+   */
   action(actionIdOrArray, fn) {
     const arr = Array.isArray(actionIdOrArray)
       ? actionIdOrArray
@@ -129,6 +179,10 @@ class DiscordBot {
     })
   }
 
+  /**
+   * Launch the bot and connect to Discord.
+   * @returns {Promise<void>}
+   */
   async launch() {
     if (!this.client) {
       const { Client, GatewayIntentBits } = await import('discord.js')
@@ -253,5 +307,13 @@ class DiscordBot {
   }
 }
 
+/**
+ * Main DiscordBot framework class.
+ * @type {DiscordBot}
+ */
 export default DiscordBot
+/**
+ * Markup utility for Discord message components.
+ * @type {Markup}
+ */
 export { Markup, Scene, SceneManager, session }
